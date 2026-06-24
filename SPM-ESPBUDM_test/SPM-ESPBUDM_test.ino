@@ -60,8 +60,9 @@ void loop() {
     // Accepts both pointers and references
     ESP32Can.writeFrame(obdFrame);  // timeout defaults to 1 ms
 
-    Serial.println(digitalRead(EN_SIG));
-    //Serial.println(analogRead(EN_SIG));
+    //Serial.println(digitalRead(EN_SIG));
+    //Serial2.println(digitalRead(EN_SIG));
+    //Serial2.print("yah");
   }
 
   if (ESP32Can.readFrame(rxFrame, 10)) {
@@ -75,8 +76,24 @@ void loop() {
   }
 
   if(Serial2.available()){
-   char a = Serial2.read();
-   Serial2.write(a);
-   Serial.write(a);
+    uint8_t rx_buf[50];
+    int rx_len = 0;
+    delay(10);
+    while (Serial2.available()) {
+      rx_buf[rx_len++] = Serial2.read();
+    }
+    Serial.write(rx_buf, rx_len);
+    Serial.println();
+    Serial2.write(rx_buf, rx_len);
+  }
+
+    if(Serial.available()){
+    uint8_t rx_buf[50];
+    int rx_len = 0;
+    delay(10);
+    while (Serial.available()) {
+      rx_buf[rx_len++] = Serial.read();
+    }
+    Serial2.write(rx_buf, rx_len);
   }
 }
